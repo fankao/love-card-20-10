@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Em Yêu - 20/10 (Tự Động Phát Nhạc)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #fce4ec; /* Hồng phấn */
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.7);
+            padding: 20px;
+            text-align: center;
+            max-width: 90%;
+            width: 320px;
+            border: 2px solid #ff69b4;
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Ẩn nút bấm nếu có */
+        #musicButton {
+            display: none !important; 
+        }
+
+        /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH */
+        .heart-divider-large {
+            color: #ff1493;
+            font-size: 2.5em;
+            display: block;
+            margin: 15px auto;
+            animation: beat 1.5s infinite alternate;
+        }
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Tiêu đề và nội dung */
+        h1 {
+            color: #e91e63;
+            margin-bottom: 5px;
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        p {
+            color: #333;
+            font-size: 0.9em;
+            line-height: 1.4;
+            margin: 5px 0;
+            padding: 0 10px;
+        }
+        .signature {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #ff69b4;
+            font-size: 1em;
+        }
+        /* Hình ảnh */
+        .rose-image {
+            width: 80px;
+            height: auto;
+            margin: 10px auto;
+            display: block;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: float 3s ease-in-out infinite alternate;
+        }
+
+        /* Hiệu ứng icon bay */
+        .floating-icon {
+            position: fixed;
+            font-size: 1.3em;
+            opacity: 0;
+            /* Giữ nguyên animation floatAndFade để icon bay đi */
+            animation: floatAndFade 8s ease-in forwards;
+            pointer-events: none;
+            z-index: 5;
+        }
+        @keyframes floatAndFade {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body onload="playAudio()"> 
+    <audio id="myAudio" loop autoplay> 
+        <source src="./Nơi Này Có Anh - Sơn Tùng M-TP.mp3" type="audio/mpeg">
+        Trình duyệt của bạn không hỗ trợ phát nhạc.
+    </audio>
+
+    <div class="card">
+        
+        <button id="musicButton">Bật Nhạc Lên Em</button>
+        
+        <span class="heart-divider-large">&#10084;</span> 
+
+        <h1>Gửi Tình Yêu Lớn Nhất</h1>
+        
+        <span class="heart-divider-large">&#10084;</span> 
+        
+        <img class="rose-image" src="./UgqQ.gif" alt="Bông hồng dễ thương">
+        
+        <p>
+            Chúc <b>Công Chúa</b> của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Anh yêu nụ cười của em!
+        </p>
+
+        <span class="heart-divider-large">&#10084;</span> 
+        
+        <p>
+            Cảm ơn em vì tất cả. Em là món quà tuyệt vời nhất của anh. Mãi mãi bên em.
+        </p>
+
+        <div style="margin-top: 10px; color: #ff69b4; font-size: 1.3em;">
+            &#10084; &#10084; &#10084;
+        </div>
+        
+        <div class="signature">
+            Anh Yêu Cụa Iemmmm
+        </div>
+    </div>
+
+    <script>
+        // JAVASCRIPT ĐỂ BUỘC PHÁT NHẠC NGAY KHI TẢI
+        function playAudio() {
+            const audio = document.getElementById('myAudio');
+            audio.play().catch(error => {
+                console.log("Autoplay bị chặn.");
+            });
+        }
+
+        // Kịch bản icon bay
+        const icons = [
+            '&#10084;', /* Trái tim */
+            '&#128149;', /* Trái tim lung linh */
+            '&#127801;', /* Hoa hồng */
+            '&#128150;', /* Trái tim bay */
+            '&#127925;', /* Nốt nhạc đơn */
+            '&#127926;'  /* Nốt nhạc kép */
+        ]; 
+        const iconColors = ['#ff69b4', '#ff85a2', '#ffc2d1', '#f06292', '#e91e63']; 
+
+        function createFloatingIcon() {
+            const iconElement = document.createElement('span');
+            iconElement.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+            iconElement.classList.add('floating-icon');
+            
+            // THAY ĐỔI QUAN TRỌNG: Đặt vị trí ngẫu nhiên trên toàn bộ màn hình (0-100vw và 0-100vh)
+            iconElement.style.left = `${Math.random() * 100}vw`; 
+            iconElement.style.top = `${Math.random() * 100}vh`; 
+            
+            iconElement.style.color = iconColors[Math.floor(Math.random() * iconColors.length)]; 
+            iconElement.style.animationDelay = `${Math.random() * 5}s`;
+            iconElement.style.fontSize = `${1.2 + Math.random() * 0.8}em`; 
+            document.body.appendChild(iconElement);
+
+            iconElement.addEventListener('animationend', () => {
+                iconElement.remove();
+            });
+        }
+
+        setInterval(createFloatingIcon, 400); 
+    </script>
+</body>
+</html>
