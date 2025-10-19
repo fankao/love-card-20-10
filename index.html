@@ -9,11 +9,14 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; 
             min-height: 100vh;
             margin: 0;
             background-color: #fce4ec; /* Hồng phấn */
-            padding: 10px;
+            padding-top: 15vh;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 10px; 
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -35,12 +38,27 @@
             to { opacity: 1; transform: scale(1); }
         }
         
-        /* Ẩn nút bấm nếu có */
+        /* NÚT BẬT NHẠC (Ban đầu ẩn, chỉ hiện nếu Autoplay thất bại) */
         #musicButton {
-            display: none !important; 
+            background-color: #ff69b4; /* Hồng */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px #e91e63;
+            /* QUAN TRỌNG: Mặc định ẩn, sẽ hiện bằng JS nếu cần */
+            display: none; 
+        }
+        #musicButton:active {
+            box-shadow: 0 2px #e91e63;
+            transform: translateY(2px);
         }
 
-        /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH */
+        /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH (Giữ nguyên) */
         .heart-divider-large {
             color: #ff1493;
             font-size: 2.5em;
@@ -53,7 +71,7 @@
             50% { transform: scale(1.1); }
         }
 
-        /* Tiêu đề và nội dung */
+        /* Tiêu đề và nội dung (Giữ nguyên) */
         h1 {
             color: #e91e63;
             margin-bottom: 5px;
@@ -73,7 +91,7 @@
             color: #ff69b4;
             font-size: 1em;
         }
-        /* Hình ảnh */
+        /* Hình ảnh (Giữ nguyên) */
         .rose-image {
             width: 80px;
             height: auto;
@@ -84,32 +102,26 @@
             animation: float 3s ease-in-out infinite alternate;
         }
 
-        /* Hiệu ứng icon bay */
+        /* Hiệu ứng icon bay (Giữ nguyên) */
         .floating-icon {
             position: fixed;
             font-size: 1.3em;
             opacity: 0;
-            /* Giữ nguyên animation floatAndFade để icon bay đi */
             animation: floatAndFade 8s ease-in forwards;
             pointer-events: none;
             z-index: 5;
-        }
-        @keyframes floatAndFade {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.7; }
-            100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
         }
     </style>
 </head>
 <body onload="playAudio()"> 
     <audio id="myAudio" loop autoplay> 
-        <source src="./Nơi Này Có Anh - Sơn Tùng M-TP.mp3" type="audio/mpeg">
+        <source src="Nơi Này Có Anh - Sơn Tùng M-TP.mp3" type="audio/mpeg">
         Trình duyệt của bạn không hỗ trợ phát nhạc.
     </audio>
 
     <div class="card">
         
-        <button id="musicButton">Bật Nhạc Lên Em</button>
+        <button id="musicButton">🔊 Bật Nhạc Lên Em</button>
         
         <span class="heart-divider-large">&#10084;</span> 
 
@@ -120,7 +132,7 @@
         <img class="rose-image" src="./UgqQ.gif" alt="Bông hồng dễ thương">
         
         <p>
-            Chúc <b>Công Chúa</b> của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Anh yêu nụ cười của em!
+            Chúc <b>Công Chúa</b> của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Giữ mãi nụ cười cho riêng mình anh nhé!
         </p>
 
         <span class="heart-divider-large">&#10084;</span> 
@@ -139,22 +151,48 @@
     </div>
 
     <script>
-        // JAVASCRIPT ĐỂ BUỘC PHÁT NHẠC NGAY KHI TẢI
+        // JAVASCRIPT XỬ LÝ AUTOPLAY VÀ NÚT BẤM
+        const audio = document.getElementById('myAudio');
+        const button = document.getElementById('musicButton');
+        let isPlaying = false;
+
         function playAudio() {
-            const audio = document.getElementById('myAudio');
-            audio.play().catch(error => {
-                console.log("Autoplay bị chặn.");
+            // Cố gắng tự động phát
+            audio.play().then(() => {
+                isPlaying = true;
+                // Nếu thành công, không làm gì (nút vẫn ẩn)
+            }).catch(error => {
+                // Nếu bị chặn, hiện nút bấm
+                button.style.display = 'block';
+                console.log("Autoplay bị chặn. Hiển thị nút bấm để tương tác.");
             });
         }
+        
+        // Xử lý sự kiện khi người dùng bấm nút
+        button.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                button.innerHTML = '🔊 Bật Nhạc Lên Em';
+                isPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    button.innerHTML = '🔇 Tắt Nhạc Đi Anh';
+                    isPlaying = true;
+                }).catch(error => {
+                    alert("Không thể phát nhạc. Vui lòng kiểm tra cài đặt trình duyệt!");
+                });
+            }
+        });
 
-        // Kịch bản icon bay
+
+        // Kịch bản icon bay (Giữ nguyên)
         const icons = [
-            '&#10084;', /* Trái tim */
-            '&#128149;', /* Trái tim lung linh */
-            '&#127801;', /* Hoa hồng */
-            '&#128150;', /* Trái tim bay */
-            '&#127925;', /* Nốt nhạc đơn */
-            '&#127926;'  /* Nốt nhạc kép */
+            '&#10084;', 
+            '&#128149;', 
+            '&#127801;', 
+            '&#128150;', 
+            '&#127925;', 
+            '&#127926;'  
         ]; 
         const iconColors = ['#ff69b4', '#ff85a2', '#ffc2d1', '#f06292', '#e91e63']; 
 
@@ -163,7 +201,6 @@
             iconElement.innerHTML = icons[Math.floor(Math.random() * icons.length)];
             iconElement.classList.add('floating-icon');
             
-            // THAY ĐỔI QUAN TRỌNG: Đặt vị trí ngẫu nhiên trên toàn bộ màn hình (0-100vw và 0-100vh)
             iconElement.style.left = `${Math.random() * 100}vw`; 
             iconElement.style.top = `${Math.random() * 100}vh`; 
             
