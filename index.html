@@ -19,22 +19,26 @@
             position: relative; 
             overflow: hidden; 
         }
-        /* KEYFRAMES CHO HIỆU ỨNG RUNG LẮC (ĐUNG ĐƯA) */
+        /* KEYFRAMES CHO HIỆU ỨNG RUNG LẮC (ĐUNG ĐƯA) CỦA THIỆP */
         @keyframes swing {
             0%, 100% { transform: rotate(0deg); }
             50% { transform: rotate(1deg); }
             75% { transform: rotate(-1deg); }
         }
 
-        /* KEYFRAMES MỚI: NHẤP NHÁY TINH TẾ CHO ICON LOA */
-        @keyframes hintPulse {
+        /* KEYFRAMES MỚI: RUNG LẮC MẠNH VÀ NHẤP NHÁY CHO ICON LOA */
+        @keyframes shakeHint {
             0%, 100% { 
+                transform: translateX(0); 
                 box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
-                transform: scale(1);
             }
-            50% { 
-                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2); /* Sáng mạnh hơn */
-                transform: scale(1.05); /* Nhảy nhẹ */
+            20%, 60% { 
+                transform: translateX(-2px) scale(1.05); /* Lắc sang trái và lớn hơn */
+                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2); /* Sáng mạnh */
+            }
+            40%, 80% { 
+                transform: translateX(2px) scale(1.05); /* Lắc sang phải và lớn hơn */
+                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2); /* Sáng mạnh */
             }
         }
         
@@ -75,7 +79,6 @@
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             padding: 8px; 
-            /* Mặc định, box-shadow nhẹ */
             box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
             transition: color 0.3s, background-color 0.3s, transform 0.3s;
             line-height: 1; 
@@ -84,9 +87,9 @@
             justify-content: center;
         }
 
-        /* CLASS ĐỂ KÍCH HOẠT HƯỚNG DẪN BẰNG ANIMATION */
+        /* CLASS ĐỂ KÍCH HOẠT HƯỚNG DẪN BẰNG ANIMATION LẮC */
         .hint-active {
-             animation: hintPulse 1s infinite; /* Áp dụng hiệu ứng nhấp nháy/nhảy */
+             animation: shakeHint 0.5s infinite; /* Áp dụng hiệu ứng lắc mạnh */
         }
 
         /* CONTAINER CHO ICON BÊN TRONG CARD (Giữ nguyên) */
@@ -166,14 +169,13 @@
         const speakerIcon = document.getElementById('speakerIcon');
         let isMuted = true; 
 
-        // Hàm Tinh Tế: Chỉ áp dụng animation nhấp nháy cho icon loa
+        // Hàm Tinh Tế: Chỉ áp dụng animation lắc mạnh cho icon loa
         function showHint() {
             // Đảm bảo chỉ hiển thị gợi ý sau khi thẻ đã hiện ra
             setTimeout(() => {
                 // Nếu nhạc đang ở chế độ MUTE và chưa chạy
                 if (audio.paused && audio.muted) {
-                    speakerIcon.classList.add('hint-active'); // Kích hoạt animation nhấp nháy
-                    console.log("Kích hoạt gợi ý nhấp nháy tinh tế cho nút nhạc.");
+                    speakerIcon.classList.add('hint-active'); // Kích hoạt animation lắc
                 }
             }, 2000); 
         }
@@ -193,12 +195,11 @@
                 audio.muted = false; 
                 isMuted = false;
                 speakerIcon.innerHTML = '&#127926;'; // Nốt nhạc có tiếng
-                speakerIcon.classList.remove('hint-active'); // TẮT hiệu ứng nhấp nháy
+                speakerIcon.classList.remove('hint-active'); // TẮT hiệu ứng lắc
             } else {
                 audio.muted = true; 
                 isMuted = true;
                 speakerIcon.innerHTML = '&#127932;'; // Nốt nhạc câm
-                // Có thể để lại hint-active nếu muốn họ tiếp tục bật lại
             }
         }
         
