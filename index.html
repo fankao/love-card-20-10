@@ -25,6 +25,18 @@
             50% { transform: rotate(1deg); }
             75% { transform: rotate(-1deg); }
         }
+
+        /* KEYFRAMES MỚI: NHẤP NHÁY TINH TẾ CHO ICON LOA */
+        @keyframes hintPulse {
+            0%, 100% { 
+                box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2); /* Sáng mạnh hơn */
+                transform: scale(1.05); /* Nhảy nhẹ */
+            }
+        }
         
         .card {
             background-color: #fff;
@@ -36,10 +48,10 @@
             width: 320px;
             position: relative; 
             z-index: 10;
-            /* ĐÃ CẬP NHẬT: Thêm hiệu ứng swing */
+            /* Gộp 2 hiệu ứng: fadeIn và swing */
             animation: 
                 fadeIn 1.5s ease-in-out forwards,
-                swing 3s ease-in-out 1.5s infinite alternate; /* Chạy swing sau khi fadeIn kết thúc */
+                swing 3s ease-in-out 1.5s infinite alternate; 
             border: 2px solid #ff69b4;
             margin: auto; 
             transform-origin: center center; 
@@ -63,15 +75,21 @@
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             padding: 8px; 
+            /* Mặc định, box-shadow nhẹ */
             box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
-            transition: color 0.3s, background-color 0.3s;
+            transition: color 0.3s, background-color 0.3s, transform 0.3s;
             line-height: 1; 
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* CONTAINER CHO ICON BÊN TRONG CARD */
+        /* CLASS ĐỂ KÍCH HOẠT HƯỚNG DẪN BẰNG ANIMATION */
+        .hint-active {
+             animation: hintPulse 1s infinite; /* Áp dụng hiệu ứng nhấp nháy/nhảy */
+        }
+
+        /* CONTAINER CHO ICON BÊN TRONG CARD (Giữ nguyên) */
         .card-overlay {
             position: absolute;
             top: 0;
@@ -83,50 +101,22 @@
             z-index: 11; 
         }
 
-        /* Keyframes chung */
-        @keyframes beat {
-            to { transform: scale(1.1); }
-        }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-10px); }
-        }
-
+        /* CÁC THÀNH PHẦN KHÁC (Giữ nguyên) */
+        @keyframes beat { to { transform: scale(1.1); } }
+        @keyframes float { 0% { transform: translateY(0px); } 100% { transform: translateY(-10px); } }
         .heart-divider-large { color: #ff1493; font-size: 2.5em; display: block; margin: 15px auto; animation: beat 1.5s infinite alternate; }
         h1 { color: #e91e63; margin-bottom: 5px; font-size: 1.6em; font-weight: bold; }
         p { color: #333; font-size: 0.9em; line-height: 1.4; margin: 5px 0; padding: 0 10px; }
-        .signature { 
-            margin-top: 15px; 
-            font-weight: bold; 
-            color: #ff69b4; 
-            font-size: 1em; 
-            padding-right: 35px; 
-        }
-        .rose-image { 
-            width: 80px; 
-            height: auto; 
-            margin: 10px auto; 
-            display: block; 
-            border-radius: 50%; 
-            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); 
-            animation: float 3s ease-in-out infinite alternate; 
-        }
-
-        /* Hiệu ứng icon bay */
+        .signature { margin-top: 15px; font-weight: bold; color: #ff69b4; font-size: 1em; padding-right: 35px; }
+        .rose-image { width: 80px; height: auto; margin: 10px auto; display: block; border-radius: 50%; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); animation: float 3s ease-in-out infinite alternate; }
         .floating-icon { font-size: 1.3em; opacity: 0; pointer-events: none; z-index: 5; }
         .floating-icon.background-icon { position: fixed; animation: floatAndFade 8s ease-in forwards; z-index: 5; }
         .card-overlay .floating-icon { position: absolute; animation: floatAndFadeInCard 6s ease-in forwards; z-index: 12; }
-
-        /* Keyframes Opacity */
         @keyframes floatAndFade {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.3; } 
-            100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.3; } 100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
         }
         @keyframes floatAndFadeInCard {
-            0% { transform: translateY(100%) translateX(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.5; } 
-            100% { transform: translateY(-100%) translateX(0vw) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(100%) translateX(0) rotate(0deg); opacity: 0; } 20% { opacity: 0.5; } 100% { transform: translateY(-100%) translateX(0vw) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -174,28 +164,27 @@
         // JAVASCRIPT XỬ LÝ ÂM THANH
         const audio = document.getElementById('myAudio');
         const speakerIcon = document.getElementById('speakerIcon');
-        let isMuted = true; // Ban đầu audio tag đang là muted
+        let isMuted = true; 
 
-        // HÀM TỰ ĐỘNG CLICK NÚT NHẠC
-        function autoClickSpeaker() {
-            // Dùng setTimeout để đảm bảo hành động xảy ra sau khi trình duyệt đã ổn định
+        // Hàm Tinh Tế: Chỉ áp dụng animation nhấp nháy cho icon loa
+        function showHint() {
+            // Đảm bảo chỉ hiển thị gợi ý sau khi thẻ đã hiện ra
             setTimeout(() => {
-                if (isMuted) {
-                    // Giả lập hành động click để bật tiếng
-                    speakerIcon.click();
-                    console.log("Đã thử tự động click nút nhạc để bật tiếng.");
+                // Nếu nhạc đang ở chế độ MUTE và chưa chạy
+                if (audio.paused && audio.muted) {
+                    speakerIcon.classList.add('hint-active'); // Kích hoạt animation nhấp nháy
+                    console.log("Kích hoạt gợi ý nhấp nháy tinh tế cho nút nhạc.");
                 }
-            }, 100); 
+            }, 2000); 
         }
         
         function playAudio() {
-            // Cố gắng phát nhạc (sẽ phát ở chế độ muted theo cấu hình HTML)
+            // Cố gắng phát (phát ở chế độ muted)
             audio.play().then(() => {
-                // Nếu phát thành công (thường là muted)
-                autoClickSpeaker(); // Kích hoạt lệnh click để cố gắng bật tiếng
+                showHint(); 
             }).catch(error => {
-                console.log("Phát nhạc bị chặn. Đang chờ tương tác người dùng.");
-                speakerIcon.innerHTML = '&#127932;'; 
+                // Nếu bị chặn hoàn toàn, vẫn hiển thị gợi ý
+                showHint();
             });
         }
         
@@ -204,10 +193,12 @@
                 audio.muted = false; 
                 isMuted = false;
                 speakerIcon.innerHTML = '&#127926;'; // Nốt nhạc có tiếng
+                speakerIcon.classList.remove('hint-active'); // TẮT hiệu ứng nhấp nháy
             } else {
                 audio.muted = true; 
                 isMuted = true;
                 speakerIcon.innerHTML = '&#127932;'; // Nốt nhạc câm
+                // Có thể để lại hint-active nếu muốn họ tiếp tục bật lại
             }
         }
         
