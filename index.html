@@ -19,6 +19,13 @@
             position: relative; 
             overflow: hidden; 
         }
+        /* THÊM KEYFRAMES MỚI CHO HIỆU ỨNG RUNG LẮC */
+        @keyframes swing {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(1deg); }
+            75% { transform: rotate(-1deg); }
+        }
+        
         .card {
             background-color: #fff;
             border-radius: 12px;
@@ -29,29 +36,38 @@
             width: 320px;
             position: relative; 
             z-index: 10;
-            animation: fadeIn 1.5s ease-in-out;
+            /* ĐIỀU CHỈNH: Giữ lại fadeIn và thêm swing */
+            animation: 
+                fadeIn 1.5s ease-in-out forwards,
+                swing 3s ease-in-out 1.5s infinite alternate; /* Chạy swing sau khi fadeIn kết thúc */
             border: 2px solid #ff69b4;
             margin: auto; 
+            transform-origin: center center; /* Đảm bảo xoay quanh tâm */
         }
+        /* Cần giữ lại fadeIn riêng biệt nếu muốn sử dụng cú pháp animation ngắn gọn */
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
         
-        /* ICON LOA Ở GÓC CARD ĐÃ ĐƯỢC CHỈNH SỬA */
+        /* ICON NHẠC Ở GÓC CARD (Giữ nguyên) */
         #speakerIcon {
             position: absolute; 
-            bottom: 5px; /* Giảm khoảng cách từ đáy thiệp */
-            right: 5px; /* Giảm khoảng cách từ cạnh phải thiệp */
+            bottom: 5px; 
+            right: 5px; 
             cursor: pointer;
-            font-size: 1.5em; /* TĂNG KÍCH THƯỚC ICON */
+            font-size: 1.5em; 
             color: #ff69b4;
             z-index: 101; 
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            padding: 8px; /* TĂNG PADDING để icon trông to và dễ bấm hơn */
-            box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); /* Tăng shadow để nổi bật */
+            padding: 8px; 
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
             transition: color 0.3s, background-color 0.3s;
+            line-height: 1; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* CONTAINER CHO ICON BÊN TRONG CARD (Giữ nguyên) */
@@ -75,12 +91,11 @@
             font-weight: bold; 
             color: #ff69b4; 
             font-size: 1em; 
-            /* CHỈNH LẠI PADDING: Giảm để phù hợp với icon mới */
             padding-right: 35px; 
         }
         .rose-image { width: 80px; height: auto; margin: 10px auto; display: block; border-radius: 50%; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); animation: float 3s ease-in-out infinite alternate; }
 
-        /* Hiệu ứng icon bay */
+        /* Hiệu ứng icon bay (Giữ nguyên) */
         .floating-icon { font-size: 1.3em; opacity: 0; pointer-events: none; z-index: 5; }
         .floating-icon.background-icon { position: fixed; animation: floatAndFade 8s ease-in forwards; z-index: 5; }
         .card-overlay .floating-icon { position: absolute; animation: floatAndFadeInCard 6s ease-in forwards; z-index: 12; }
@@ -114,7 +129,7 @@
         <img class="rose-image" src="./UgqQ.gif" alt="Bông hồng dễ thương">
         
         <p>
-            Chúc **Công Chúa** của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Giữ mãi nụ cười cho riêng mình anh nhé!
+            Chúc <b>Công Chúa</b> của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Giữ mãi nụ cười cho riêng mình anh nhé!
         </p>
 
         <span class="heart-divider-large">&#10084;</span> 
@@ -132,7 +147,7 @@
         </div>
 
         <span id="speakerIcon" onclick="toggleMute()">
-            &#128263; 
+            &#127932; 
         </span>
         <div class="card-overlay"></div>
     </div>
@@ -145,17 +160,17 @@
         function playAudio() {
             audio.play().catch(error => {
                 console.log("Phát mute cũng bị chặn.");
-                speakerIcon.innerHTML = '&#128263;'; 
+                speakerIcon.innerHTML = '&#127932;'; 
             });
         }
         
         function toggleMute() {
             if (audio.muted) {
                 audio.muted = false; 
-                speakerIcon.innerHTML = '&#128266;'; 
+                speakerIcon.innerHTML = '&#127926;'; 
             } else {
                 audio.muted = true; 
-                speakerIcon.innerHTML = '&#128263;'; 
+                speakerIcon.innerHTML = '&#127932;'; 
             }
         }
         
