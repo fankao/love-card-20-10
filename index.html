@@ -16,6 +16,7 @@
             background-color: #fce4ec; /* Hồng phấn */
             padding: 0 10px; 
             box-sizing: border-box;
+            position: relative; 
             overflow: hidden; 
         }
         .card {
@@ -26,7 +27,7 @@
             text-align: center;
             max-width: 90%;
             width: 320px;
-            position: relative; /* Đảm bảo .card-overlay có thể định vị theo .card */
+            position: relative; 
             z-index: 10;
             animation: fadeIn 1.5s ease-in-out;
             border: 2px solid #ff69b4;
@@ -37,15 +38,15 @@
             to { opacity: 1; transform: scale(1); }
         }
         
-        /* ICON LOA CỐ ĐỊNH Ở GÓC MÀN HÌNH */
+        /* ICON LOA Ở GÓC CARD (Giữ nguyên) */
         #speakerIcon {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
             cursor: pointer;
-            font-size: 1.8em;
+            font-size: 1.2em; 
             color: #ff69b4;
-            z-index: 100; 
+            z-index: 101; 
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             padding: 5px;
@@ -53,65 +54,56 @@
             transition: color 0.3s;
         }
 
-        /* CONTAINER CHO ICON BÊN TRONG CARD */
+        /* CONTAINER CHO ICON BÊN TRONG CARD (Giữ nguyên) */
         .card-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Quan trọng để icon không bay ra khỏi card */
-            pointer-events: none; /* Cho phép tương tác với nội dung bên dưới */
-            z-index: 11; /* Đảm bảo nó nằm trên nội dung card */
+            overflow: hidden; 
+            pointer-events: none; 
+            z-index: 11; 
         }
 
-        /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH */
-        .heart-divider-large {
-            color: #ff1493;
-            font-size: 2.5em;
-            display: block;
-            margin: 15px auto;
-            animation: beat 1.5s infinite alternate;
-        }
-        @keyframes beat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* Tiêu đề và nội dung */
+        /* Keyframes chung (Giữ nguyên) */
+        .heart-divider-large { color: #ff1493; font-size: 2.5em; display: block; margin: 15px auto; animation: beat 1.5s infinite alternate; }
         h1 { color: #e91e63; margin-bottom: 5px; font-size: 1.6em; font-weight: bold; }
         p { color: #333; font-size: 0.9em; line-height: 1.4; margin: 5px 0; padding: 0 10px; }
-        .signature { margin-top: 15px; font-weight: bold; color: #ff69b4; font-size: 1em; }
-        .rose-image { 
-            width: 80px; height: auto; margin: 10px auto; display: block; 
-            border-radius: 50%; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); 
-            animation: float 3s ease-in-out infinite alternate;
-        }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        .signature { margin-top: 15px; font-weight: bold; color: #ff69b4; font-size: 1em; padding-right: 25px; }
+        .rose-image { width: 80px; height: auto; margin: 10px auto; display: block; border-radius: 50%; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); animation: float 3s ease-in-out infinite alternate; }
 
         /* Hiệu ứng icon bay */
         .floating-icon {
-            position: absolute; /* Thay đổi thành absolute để bay trong container */
             font-size: 1.3em;
             opacity: 0;
-            animation: floatAndFade 8s ease-in forwards;
             pointer-events: none;
+            z-index: 5; 
+        }
+        
+        /* Icon bay nền */
+        .floating-icon.background-icon {
+            position: fixed; 
+            animation: floatAndFade 8s ease-in forwards;
             z-index: 5;
         }
-        /* THAY ĐỔI: Animation cho icon bên trong card sẽ bay trong phạm vi card */
+        
+        /* Icon bay trong card */
         .card-overlay .floating-icon {
-            animation: floatAndFadeInCard 6s ease-in forwards; /* Animation riêng cho icon trong card */
+            position: absolute; 
+            animation: floatAndFadeInCard 6s ease-in forwards;
+            z-index: 12; 
         }
+
+        /* Keyframes */
         @keyframes floatAndFade {
             0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.7; }
+            10% { opacity: 0.3; } /* THAY ĐỔI: Giảm tối đa opacity icon nền xuống 0.3 */
             100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
         }
-        /* Animation mới cho icon trong card */
         @keyframes floatAndFadeInCard {
             0% { transform: translateY(100%) translateX(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.8; }
+            20% { opacity: 0.5; } /* THAY ĐỔI: Giảm tối đa opacity icon trong card xuống 0.5 */
             100% { transform: translateY(-100%) translateX(0vw) rotate(360deg); opacity: 0; }
         }
     </style>
@@ -122,13 +114,7 @@
         Trình duyệt của bạn không hỗ trợ phát nhạc.
     </audio>
 
-    <span id="speakerIcon" onclick="toggleMute()">
-        &#128263; 
-    </span>
-
     <div class="card">
-        <div class="card-overlay"></div>
-
         <span class="heart-divider-large">&#10084;</span> 
 
         <h1>Gửi Tình Yêu Lớn Nhất</h1>
@@ -154,10 +140,15 @@
         <div class="signature">
             Anh Yêu Cụa Iemmmm
         </div>
+
+        <span id="speakerIcon" onclick="toggleMute()">
+            &#128263; 
+        </span>
+        <div class="card-overlay"></div>
     </div>
 
     <script>
-        // JAVASCRIPT XỬ LÝ ÂM THANH
+        // JAVASCRIPT XỬ LÝ ÂM THANH (Giữ nguyên)
         const audio = document.getElementById('myAudio');
         const speakerIcon = document.getElementById('speakerIcon');
 
@@ -178,7 +169,7 @@
             }
         }
         
-        // Kịch bản icon bay
+        // Kịch bản icon bay (Giữ nguyên)
         const icons = ['&#10084;', '&#128149;', '&#127801;', '&#128150;', '&#127925;', '&#127926;' ]; 
         const iconColors = ['#ff69b4', '#ff85a2', '#ffc2d1', '#f06292', '#e91e63']; 
         
@@ -190,19 +181,19 @@
             iconElement.style.animationDelay = `${Math.random() * 5}s`;
             iconElement.style.fontSize = `${1.2 + Math.random() * 0.8}em`; 
 
-            // QUAN TRỌNG: Chia icon bay ra 2 nơi
-            if (Math.random() < 0.5) { // 50% icon bay ở nền
+            if (Math.random() < 0.5) { 
+                iconElement.classList.add('background-icon');
                 iconElement.style.left = `${Math.random() * 100}vw`; 
                 iconElement.style.top = `${Math.random() * 100}vh`; 
                 document.body.appendChild(iconElement);
-            } else { // 50% icon bay bên trong card
+            } else { 
                 const cardOverlay = document.querySelector('.card-overlay');
                 if (cardOverlay) {
-                    // Đặt vị trí ban đầu của icon bên trong card overlay (dựa trên % của card)
                     iconElement.style.left = `${Math.random() * 100}%`; 
                     iconElement.style.top = `${Math.random() * 100}%`; 
                     cardOverlay.appendChild(iconElement);
-                } else { // Fallback nếu không tìm thấy card-overlay
+                } else { 
+                    iconElement.classList.add('background-icon');
                     iconElement.style.left = `${Math.random() * 100}vw`; 
                     iconElement.style.top = `${Math.random() * 100}vh`; 
                     document.body.appendChild(iconElement);
