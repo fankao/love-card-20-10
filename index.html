@@ -9,16 +9,19 @@
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start; 
+            align-items: center; /* QUAN TRỌNG: Căn giữa theo chiều dọc */
             min-height: 100vh;
+            min-height: 100dvh; /* Tối ưu cho iPhone */
             margin: 0;
             background-color: #fce4ec; /* Hồng phấn */
-            padding-top: 15vh;
-            padding-left: 10px;
-            padding-right: 10px;
-            padding-bottom: 10px; 
+            
+            /* THAY ĐỔI: Thêm padding dọc để thiệp không bị dính sát mép trên/dưới trên màn hình nhỏ */
+            padding: 20px 10px; 
+            
             box-sizing: border-box;
-            overflow: hidden;
+            /* BỎ overflow: hidden; nếu bạn muốn cuộn khi nội dung vượt quá chiều cao */
+            /* Để giữ hiệu ứng icon bay, ta vẫn dùng overflow: hidden; */
+            overflow: hidden; 
         }
         .card {
             background-color: #fff;
@@ -38,27 +41,27 @@
             to { opacity: 1; transform: scale(1); }
         }
         
-        /* NÚT BẬT NHẠC (Ban đầu ẩn, chỉ hiện nếu Autoplay thất bại) */
+        /* NÚT BẬT NHẠC */
         #musicButton {
-            background-color: #ff69b4; /* Hồng */
+            background-color: #ff69b4; 
             color: white;
             border: none;
-            padding: 10px 20px;
-            margin-bottom: 20px;
+            padding: 8px 15px; 
+            margin: 0 auto 20px auto; /* Đảm bảo căn giữa nút khi nó hiện ra */
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s, transform 0.1s;
             box-shadow: 0 4px #e91e63;
-            /* QUAN TRỌNG: Mặc định ẩn, sẽ hiện bằng JS nếu cần */
             display: none; 
+            font-size: 0.9em; 
         }
         #musicButton:active {
             box-shadow: 0 2px #e91e63;
             transform: translateY(2px);
         }
 
-        /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH (Giữ nguyên) */
+        /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH */
         .heart-divider-large {
             color: #ff1493;
             font-size: 2.5em;
@@ -71,7 +74,7 @@
             50% { transform: scale(1.1); }
         }
 
-        /* Tiêu đề và nội dung (Giữ nguyên) */
+        /* Tiêu đề và nội dung */
         h1 {
             color: #e91e63;
             margin-bottom: 5px;
@@ -91,7 +94,7 @@
             color: #ff69b4;
             font-size: 1em;
         }
-        /* Hình ảnh (Giữ nguyên) */
+        /* Hình ảnh */
         .rose-image {
             width: 80px;
             height: auto;
@@ -101,8 +104,13 @@
             box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
             animation: float 3s ease-in-out infinite alternate;
         }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
 
-        /* Hiệu ứng icon bay (Giữ nguyên) */
+        /* Hiệu ứng icon bay */
         .floating-icon {
             position: fixed;
             font-size: 1.3em;
@@ -110,6 +118,11 @@
             animation: floatAndFade 8s ease-in forwards;
             pointer-events: none;
             z-index: 5;
+        }
+        @keyframes floatAndFade {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
         }
     </style>
 </head>
@@ -157,14 +170,11 @@
         let isPlaying = false;
 
         function playAudio() {
-            // Cố gắng tự động phát
             audio.play().then(() => {
                 isPlaying = true;
-                // Nếu thành công, không làm gì (nút vẫn ẩn)
             }).catch(error => {
                 // Nếu bị chặn, hiện nút bấm
                 button.style.display = 'block';
-                console.log("Autoplay bị chặn. Hiển thị nút bấm để tương tác.");
             });
         }
         
@@ -179,13 +189,13 @@
                     button.innerHTML = '🔇 Tắt Nhạc Đi Anh';
                     isPlaying = true;
                 }).catch(error => {
-                    alert("Không thể phát nhạc. Vui lòng kiểm tra cài đặt trình duyệt!");
+                    console.log("Không thể phát nhạc sau khi tương tác.");
                 });
             }
         });
 
 
-        // Kịch bản icon bay (Giữ nguyên)
+        // Kịch bản icon bay
         const icons = [
             '&#10084;', 
             '&#128149;', 
