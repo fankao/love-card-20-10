@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Em Yêu - 20/10 (Tự Động Phát Nhạc)</title>
+    <title>Gửi Em Yêu - 20/10 (Tự Động Phát Mute)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center; /* QUAN TRỌNG: Căn giữa theo chiều dọc */
+            align-items: center; 
             min-height: 100vh;
-            min-height: 100dvh; /* Tối ưu cho iPhone */
+            min-height: 100dvh; 
             margin: 0;
             background-color: #fce4ec; /* Hồng phấn */
-            
-            /* THAY ĐỔI: Thêm padding dọc để thiệp không bị dính sát mép trên/dưới trên màn hình nhỏ */
-            padding: 20px 10px; 
-            
+            padding: 0 10px; 
             box-sizing: border-box;
-            /* BỎ overflow: hidden; nếu bạn muốn cuộn khi nội dung vượt quá chiều cao */
-            /* Để giữ hiệu ứng icon bay, ta vẫn dùng overflow: hidden; */
             overflow: hidden; 
         }
         .card {
@@ -31,34 +26,43 @@
             text-align: center;
             max-width: 90%;
             width: 320px;
-            border: 2px solid #ff69b4;
-            position: relative;
+            position: relative; /* Đảm bảo .card-overlay có thể định vị theo .card */
             z-index: 10;
             animation: fadeIn 1.5s ease-in-out;
+            border: 2px solid #ff69b4;
+            margin: auto; 
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
         
-        /* NÚT BẬT NHẠC */
-        #musicButton {
-            background-color: #ff69b4; 
-            color: white;
-            border: none;
-            padding: 8px 15px; 
-            margin: 0 auto 20px auto; /* Đảm bảo căn giữa nút khi nó hiện ra */
-            border-radius: 20px;
+        /* ICON LOA CỐ ĐỊNH Ở GÓC MÀN HÌNH */
+        #speakerIcon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s, transform 0.1s;
-            box-shadow: 0 4px #e91e63;
-            display: none; 
-            font-size: 0.9em; 
+            font-size: 1.8em;
+            color: #ff69b4;
+            z-index: 100; 
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+            transition: color 0.3s;
         }
-        #musicButton:active {
-            box-shadow: 0 2px #e91e63;
-            transform: translateY(2px);
+
+        /* CONTAINER CHO ICON BÊN TRONG CARD */
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Quan trọng để icon không bay ra khỏi card */
+            pointer-events: none; /* Cho phép tương tác với nội dung bên dưới */
+            z-index: 11; /* Đảm bảo nó nằm trên nội dung card */
         }
 
         /* TRÁI TIM LỚN LÀM KHUNG PHÂN CÁCH */
@@ -72,70 +76,59 @@
         @keyframes beat {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* Tiêu đề và nội dung */
-        h1 {
-            color: #e91e63;
-            margin-bottom: 5px;
-            font-size: 1.6em;
-            font-weight: bold;
-        }
-        p {
-            color: #333;
-            font-size: 0.9em;
-            line-height: 1.4;
-            margin: 5px 0;
-            padding: 0 10px;
-        }
-        .signature {
-            margin-top: 15px;
-            font-weight: bold;
-            color: #ff69b4;
-            font-size: 1em;
-        }
-        /* Hình ảnh */
-        .rose-image {
-            width: 80px;
-            height: auto;
-            margin: 10px auto;
-            display: block;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        h1 { color: #e91e63; margin-bottom: 5px; font-size: 1.6em; font-weight: bold; }
+        p { color: #333; font-size: 0.9em; line-height: 1.4; margin: 5px 0; padding: 0 10px; }
+        .signature { margin-top: 15px; font-weight: bold; color: #ff69b4; font-size: 1em; }
+        .rose-image { 
+            width: 80px; height: auto; margin: 10px auto; display: block; 
+            border-radius: 50%; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); 
             animation: float 3s ease-in-out infinite alternate;
         }
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
 
         /* Hiệu ứng icon bay */
         .floating-icon {
-            position: fixed;
+            position: absolute; /* Thay đổi thành absolute để bay trong container */
             font-size: 1.3em;
             opacity: 0;
             animation: floatAndFade 8s ease-in forwards;
             pointer-events: none;
             z-index: 5;
         }
+        /* THAY ĐỔI: Animation cho icon bên trong card sẽ bay trong phạm vi card */
+        .card-overlay .floating-icon {
+            animation: floatAndFadeInCard 6s ease-in forwards; /* Animation riêng cho icon trong card */
+        }
         @keyframes floatAndFade {
             0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
             10% { opacity: 0.7; }
             100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
         }
+        /* Animation mới cho icon trong card */
+        @keyframes floatAndFadeInCard {
+            0% { transform: translateY(100%) translateX(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-100%) translateX(0vw) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body onload="playAudio()"> 
-    <audio id="myAudio" loop autoplay> 
+    <audio id="myAudio" loop autoplay muted> 
         <source src="Nơi Này Có Anh - Sơn Tùng M-TP.mp3" type="audio/mpeg">
         Trình duyệt của bạn không hỗ trợ phát nhạc.
     </audio>
 
+    <span id="speakerIcon" onclick="toggleMute()">
+        &#128263; 
+    </span>
+
     <div class="card">
-        
-        <button id="musicButton">🔊 Bật Nhạc Lên Em</button>
-        
+        <div class="card-overlay"></div>
+
         <span class="heart-divider-large">&#10084;</span> 
 
         <h1>Gửi Tình Yêu Lớn Nhất</h1>
@@ -164,64 +157,59 @@
     </div>
 
     <script>
-        // JAVASCRIPT XỬ LÝ AUTOPLAY VÀ NÚT BẤM
+        // JAVASCRIPT XỬ LÝ ÂM THANH
         const audio = document.getElementById('myAudio');
-        const button = document.getElementById('musicButton');
-        let isPlaying = false;
+        const speakerIcon = document.getElementById('speakerIcon');
 
         function playAudio() {
-            audio.play().then(() => {
-                isPlaying = true;
-            }).catch(error => {
-                // Nếu bị chặn, hiện nút bấm
-                button.style.display = 'block';
+            audio.play().catch(error => {
+                console.log("Phát mute cũng bị chặn.");
+                speakerIcon.innerHTML = '&#128263;'; 
             });
         }
         
-        // Xử lý sự kiện khi người dùng bấm nút
-        button.addEventListener('click', () => {
-            if (isPlaying) {
-                audio.pause();
-                button.innerHTML = '🔊 Bật Nhạc Lên Em';
-                isPlaying = false;
+        function toggleMute() {
+            if (audio.muted) {
+                audio.muted = false; 
+                speakerIcon.innerHTML = '&#128266;'; 
             } else {
-                audio.play().then(() => {
-                    button.innerHTML = '🔇 Tắt Nhạc Đi Anh';
-                    isPlaying = true;
-                }).catch(error => {
-                    console.log("Không thể phát nhạc sau khi tương tác.");
-                });
+                audio.muted = true; 
+                speakerIcon.innerHTML = '&#128263;'; 
             }
-        });
-
-
+        }
+        
         // Kịch bản icon bay
-        const icons = [
-            '&#10084;', 
-            '&#128149;', 
-            '&#127801;', 
-            '&#128150;', 
-            '&#127925;', 
-            '&#127926;'  
-        ]; 
+        const icons = ['&#10084;', '&#128149;', '&#127801;', '&#128150;', '&#127925;', '&#127926;' ]; 
         const iconColors = ['#ff69b4', '#ff85a2', '#ffc2d1', '#f06292', '#e91e63']; 
-
+        
         function createFloatingIcon() {
             const iconElement = document.createElement('span');
             iconElement.innerHTML = icons[Math.floor(Math.random() * icons.length)];
             iconElement.classList.add('floating-icon');
-            
-            iconElement.style.left = `${Math.random() * 100}vw`; 
-            iconElement.style.top = `${Math.random() * 100}vh`; 
-            
             iconElement.style.color = iconColors[Math.floor(Math.random() * iconColors.length)]; 
             iconElement.style.animationDelay = `${Math.random() * 5}s`;
             iconElement.style.fontSize = `${1.2 + Math.random() * 0.8}em`; 
-            document.body.appendChild(iconElement);
 
-            iconElement.addEventListener('animationend', () => {
-                iconElement.remove();
-            });
+            // QUAN TRỌNG: Chia icon bay ra 2 nơi
+            if (Math.random() < 0.5) { // 50% icon bay ở nền
+                iconElement.style.left = `${Math.random() * 100}vw`; 
+                iconElement.style.top = `${Math.random() * 100}vh`; 
+                document.body.appendChild(iconElement);
+            } else { // 50% icon bay bên trong card
+                const cardOverlay = document.querySelector('.card-overlay');
+                if (cardOverlay) {
+                    // Đặt vị trí ban đầu của icon bên trong card overlay (dựa trên % của card)
+                    iconElement.style.left = `${Math.random() * 100}%`; 
+                    iconElement.style.top = `${Math.random() * 100}%`; 
+                    cardOverlay.appendChild(iconElement);
+                } else { // Fallback nếu không tìm thấy card-overlay
+                    iconElement.style.left = `${Math.random() * 100}vw`; 
+                    iconElement.style.top = `${Math.random() * 100}vh`; 
+                    document.body.appendChild(iconElement);
+                }
+            }
+
+            iconElement.addEventListener('animationend', () => { iconElement.remove(); });
         }
 
         setInterval(createFloatingIcon, 400); 
