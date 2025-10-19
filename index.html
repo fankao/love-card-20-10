@@ -38,20 +38,20 @@
             to { opacity: 1; transform: scale(1); }
         }
         
-        /* ICON LOA Ở GÓC CARD (Giữ nguyên) */
+        /* ICON LOA Ở GÓC CARD ĐÃ ĐƯỢC CHỈNH SỬA */
         #speakerIcon {
             position: absolute; 
-            bottom: 10px; 
-            right: 10px; 
+            bottom: 5px; /* Giảm khoảng cách từ đáy thiệp */
+            right: 5px; /* Giảm khoảng cách từ cạnh phải thiệp */
             cursor: pointer;
-            font-size: 1.2em; 
+            font-size: 1.5em; /* TĂNG KÍCH THƯỚC ICON */
             color: #ff69b4;
             z-index: 101; 
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
-            transition: color 0.3s;
+            padding: 8px; /* TĂNG PADDING để icon trông to và dễ bấm hơn */
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); /* Tăng shadow để nổi bật */
+            transition: color 0.3s, background-color 0.3s;
         }
 
         /* CONTAINER CHO ICON BÊN TRONG CARD (Giữ nguyên) */
@@ -70,40 +70,30 @@
         .heart-divider-large { color: #ff1493; font-size: 2.5em; display: block; margin: 15px auto; animation: beat 1.5s infinite alternate; }
         h1 { color: #e91e63; margin-bottom: 5px; font-size: 1.6em; font-weight: bold; }
         p { color: #333; font-size: 0.9em; line-height: 1.4; margin: 5px 0; padding: 0 10px; }
-        .signature { margin-top: 15px; font-weight: bold; color: #ff69b4; font-size: 1em; padding-right: 25px; }
+        .signature { 
+            margin-top: 15px; 
+            font-weight: bold; 
+            color: #ff69b4; 
+            font-size: 1em; 
+            /* CHỈNH LẠI PADDING: Giảm để phù hợp với icon mới */
+            padding-right: 35px; 
+        }
         .rose-image { width: 80px; height: auto; margin: 10px auto; display: block; border-radius: 50%; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); animation: float 3s ease-in-out infinite alternate; }
 
         /* Hiệu ứng icon bay */
-        .floating-icon {
-            font-size: 1.3em;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 5; 
-        }
-        
-        /* Icon bay nền */
-        .floating-icon.background-icon {
-            position: fixed; 
-            animation: floatAndFade 8s ease-in forwards;
-            z-index: 5;
-        }
-        
-        /* Icon bay trong card */
-        .card-overlay .floating-icon {
-            position: absolute; 
-            animation: floatAndFadeInCard 6s ease-in forwards;
-            z-index: 12; 
-        }
+        .floating-icon { font-size: 1.3em; opacity: 0; pointer-events: none; z-index: 5; }
+        .floating-icon.background-icon { position: fixed; animation: floatAndFade 8s ease-in forwards; z-index: 5; }
+        .card-overlay .floating-icon { position: absolute; animation: floatAndFadeInCard 6s ease-in forwards; z-index: 12; }
 
-        /* Keyframes */
+        /* Keyframes Opacity (Giữ nguyên độ mờ) */
         @keyframes floatAndFade {
             0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.3; } /* THAY ĐỔI: Giảm tối đa opacity icon nền xuống 0.3 */
+            10% { opacity: 0.3; } 
             100% { transform: translateY(-80vh) translateX(30vw) rotate(720deg); opacity: 0; }
         }
         @keyframes floatAndFadeInCard {
             0% { transform: translateY(100%) translateX(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.5; } /* THAY ĐỔI: Giảm tối đa opacity icon trong card xuống 0.5 */
+            20% { opacity: 0.5; } 
             100% { transform: translateY(-100%) translateX(0vw) rotate(360deg); opacity: 0; }
         }
     </style>
@@ -124,7 +114,7 @@
         <img class="rose-image" src="./UgqQ.gif" alt="Bông hồng dễ thương">
         
         <p>
-            Chúc <b>Công Chúa</b> của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Giữ mãi nụ cười cho riêng mình anh nhé!
+            Chúc **Công Chúa** của anh ngày 20/10 thật hạnh phúc, xinh đẹp và rạng ngời. Giữ mãi nụ cười cho riêng mình anh nhé!
         </p>
 
         <span class="heart-divider-large">&#10084;</span> 
