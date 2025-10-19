@@ -13,7 +13,7 @@
             min-height: 100vh;
             min-height: 100dvh; 
             margin: 0;
-            background-color: #fce4ec; /* Hồng phấn */
+            background-color: #fce4ec; 
             padding: 0 10px; 
             box-sizing: border-box;
             position: relative; 
@@ -26,19 +26,19 @@
             75% { transform: rotate(-1deg); }
         }
 
-        /* KEYFRAMES MỚI: RUNG LẮC MẠNH VÀ NHẤP NHÁY CHO ICON LOA */
+        /* KEYFRAMES RUNG LẮC CHO ICON LOA */
         @keyframes shakeHint {
             0%, 100% { 
                 transform: translateX(0); 
                 box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
             }
             20%, 60% { 
-                transform: translateX(-2px) scale(1.05); /* Lắc sang trái và lớn hơn */
-                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2); /* Sáng mạnh */
+                transform: translateX(-2px) scale(1.05);
+                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2);
             }
             40%, 80% { 
-                transform: translateX(2px) scale(1.05); /* Lắc sang phải và lớn hơn */
-                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2); /* Sáng mạnh */
+                transform: translateX(2px) scale(1.05);
+                box-shadow: 0 0 15px rgba(255, 105, 180, 1.2);
             }
         }
         
@@ -52,7 +52,6 @@
             width: 320px;
             position: relative; 
             z-index: 10;
-            /* Gộp 2 hiệu ứng: fadeIn và swing */
             animation: 
                 fadeIn 1.5s ease-in-out forwards,
                 swing 3s ease-in-out 1.5s infinite alternate; 
@@ -61,7 +60,6 @@
             transform-origin: center center; 
             font-size: 1em;
         }
-        /* Keyframes cho hiệu ứng hiện ra */
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.9) rotate(0deg); }
             to { opacity: 1; transform: scale(1) rotate(0deg); }
@@ -80,28 +78,24 @@
             border-radius: 50%;
             padding: 8px; 
             box-shadow: 0 0 8px rgba(255, 105, 180, 0.7); 
-            transition: color 0.3s, background-color 0.3s, transform 0.3s;
+            
+            /* THAY ĐỔI QUAN TRỌNG: Bỏ 'transform' khỏi transition */
+            transition: color 0.3s, background-color 0.3s; 
+            
             line-height: 1; 
             display: flex;
             align-items: center;
             justify-content: center;
+            
+            /* Kích hoạt hiệu ứng lắc ngay bằng animation */
+            animation: shakeHint 0.5s infinite;
+            animation-delay: 1.5s; /* Chờ sau khi fadeIn kết thúc (1.5s) */
         }
-
-        /* CLASS ĐỂ KÍCH HOẠT HƯỚNG DẪN BẰNG ANIMATION LẮC */
-        .hint-active {
-             animation: shakeHint 0.5s infinite; /* Áp dụng hiệu ứng lắc mạnh */
-        }
-
-        /* CONTAINER CHO ICON BÊN TRONG CARD (Giữ nguyên) */
-        .card-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; 
-            pointer-events: none; 
-            z-index: 11; 
+        
+        /* CLASS ĐỂ TẮT ANIMATION */
+        .hint-active-off {
+             animation: none !important; 
+             transform: none !important;
         }
 
         /* CÁC THÀNH PHẦN KHÁC (Giữ nguyên) */
@@ -123,9 +117,9 @@
         }
     </style>
 </head>
-<body onload="playAudio()"> 
-    <audio id="myAudio" loop autoplay muted> 
-        <source src="Nơi Này Có Anh - Sơn Tùng M-TP.mp3" type="audio/mpeg">
+<body> 
+    <audio id="myAudio" loop muted> 
+        <source src="./Nơi Này Có Anh - Sơn Tùng M-TP.mp3" type="audio/mpeg">
         Trình duyệt của bạn không hỗ trợ phát nhạc.
     </audio>
 
@@ -168,38 +162,28 @@
         const audio = document.getElementById('myAudio');
         const speakerIcon = document.getElementById('speakerIcon');
         let isMuted = true; 
-
-        // Hàm Tinh Tế: Chỉ áp dụng animation lắc mạnh cho icon loa
-        function showHint() {
-            // Đảm bảo chỉ hiển thị gợi ý sau khi thẻ đã hiện ra
-            setTimeout(() => {
-                // Nếu nhạc đang ở chế độ MUTE và chưa chạy
-                if (audio.paused && audio.muted) {
-                    speakerIcon.classList.add('hint-active'); // Kích hoạt animation lắc
-                }
-            }, 2000); 
-        }
-        
-        function playAudio() {
-            // Cố gắng phát (phát ở chế độ muted)
-            audio.play().then(() => {
-                showHint(); 
-            }).catch(error => {
-                // Nếu bị chặn hoàn toàn, vẫn hiển thị gợi ý
-                showHint();
-            });
-        }
         
         function toggleMute() {
             if (isMuted) {
+                // Khi BẬT nhạc
                 audio.muted = false; 
                 isMuted = false;
-                speakerIcon.innerHTML = '&#127926;'; // Nốt nhạc có tiếng
-                speakerIcon.classList.remove('hint-active'); // TẮT hiệu ứng lắc
+                speakerIcon.innerHTML = '&#127926;'; 
+                
+                audio.play().catch(error => {
+                    console.log("Trình duyệt vẫn chặn play nhạc (cần tương tác).");
+                });
+                
+                // TẮT hiệu ứng lắc ngay lập tức
+                speakerIcon.classList.add('hint-active-off'); 
             } else {
+                // Khi TẮT nhạc
                 audio.muted = true; 
                 isMuted = true;
-                speakerIcon.innerHTML = '&#127932;'; // Nốt nhạc câm
+                speakerIcon.innerHTML = '&#127932;'; 
+                
+                // Kích hoạt lại hiệu ứng lắc
+                speakerIcon.classList.remove('hint-active-off'); 
             }
         }
         
